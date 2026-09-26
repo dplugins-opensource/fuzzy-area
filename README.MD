@@ -171,6 +171,7 @@ Other changes:
 - Textarea lookup is now scoped to the container, so multiple instances on one page no longer interfere with each other
 - Fixed `waitForElement` logging console errors while it waits; it now uses a `MutationObserver`
 - Relative imports use explicit file extensions (native ESM)
+- Higher-contrast highlight and focused colours (WCAG AA); suggestions list no longer overflows its container by the border width
 - Picking a suggestion no longer adds a double space when a space already follows
 - Removed the hidden mirror element and caret span (never rendered, unused)
 - Package now ships only runtime files (`fuzzy-area.js`, `partials/`, `prefixes.js`, `fuzzy-area.css`, `style.scss`) — no `example/`, tests, or CI config
