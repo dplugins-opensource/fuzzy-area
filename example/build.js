@@ -1,5 +1,4 @@
 const esbuild = require("esbuild");
-const sassPlugin = require("esbuild-sass-plugin").sassPlugin;
 
 async function build() {
     try {
@@ -7,8 +6,9 @@ async function build() {
             entryPoints: ["index.js"],
             bundle: true,
             // minify: true,
+            // Importing "fuzzy-area/style.css" in index.js makes esbuild
+            // emit dist/main.min.css alongside dist/main.min.js.
             outfile: "dist/main.min.js",
-            plugins: [sassPlugin()],
         });
         console.log("Build successful");
     } catch (error) {

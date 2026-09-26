@@ -1,14 +1,4 @@
-#fuzzyareaWrap{
-    position: relative;
-
-    textarea{
-        font-family: inherit;
-    }
-}
-
-.fuzzyarea__mirror {
-    display: none !important;
-}
+// fuzzy-area.css is compiled from this file via `npm run build:css`.
 
 .fuzzyarea__highlight {
     font-weight: bold;
@@ -26,7 +16,7 @@
     width: 100%;
     z-index: 1;
     border: 1px solid #ccc;
-    overflow: scroll;
+    overflow-y: auto;
     max-height: 300px;
 
     .fuzzyarea__suggestion {

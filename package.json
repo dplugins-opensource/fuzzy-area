@@ -2,12 +2,30 @@
   "name": "fuzzy-area",
   "version": "1.2.3",
   "description": "Simple plain JS textarea fuzzy autocomplete with optional prefixes. By DPlugins.",
+  "type": "module",
   "main": "fuzzy-area.js",
-  "directories": {
-    "example": "example"
+  "exports": {
+    ".": "./fuzzy-area.js",
+    "./style.css": "./fuzzy-area.css",
+    "./style.scss": "./style.scss",
+    "./package.json": "./package.json"
   },
+  "style": "fuzzy-area.css",
+  "files": [
+    "fuzzy-area.js",
+    "prefixes.js",
+    "partials/",
+    "fuzzy-area.css",
+    "style.scss"
+  ],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:css": "sass style.scss fuzzy-area.css --no-source-map",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -18,7 +36,10 @@
     "javascript",
     "textarea",
     "fuzzy",
-    "autocomplete"
+    "autocomplete",
+    "tailwind",
+    "mention",
+    "suggestions"
   ],
   "author": {
     "name": "DPlugins",
@@ -28,5 +49,10 @@
   "bugs": {
     "url": "https://github.com/dplugins-opensource/fuzzy-area/issues"
   },
-  "homepage": "https://dplugins.com"
+  "homepage": "https://dplugins.com",
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "sass": "^1.105.0",
+    "vitest": "^5.0.2"
+  }
 }

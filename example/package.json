@@ -5,18 +5,17 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
-    "watch": "nodemon --watch src -e js,scss build.js"
+    "watch": "nodemon --watch src -e js build.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "esbuild": "^0.19.10",
-    "esbuild-sass-plugin": "^2.16.1",
     "nodemon": "^3.0.2",
     "npm-run-all": "^4.1.5"
   },
   "dependencies": {
-    "fuzzy-area": "^1.2.1"
+    "fuzzy-area": "^2.0.0"
   }
 }

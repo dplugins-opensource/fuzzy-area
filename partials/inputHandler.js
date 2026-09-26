@@ -1,74 +1,65 @@
 // inputHandler.js
+import { rankSuggestions } from "./fuzzy.js";
+import { renderSuggestions, hideSuggestions } from "./suggestionsList.js";
+
+// Find the suggestions for the word being typed.
+// Returns [{ value, indices }].
+export function getMatches(
+    currentWord,
+    _prefixes,
+    _suggestions,
+    maxSuggestions,
+    prefixMention
+) {
+    if (currentWord === "") {
+        return [];
+    }
+
+    const mention = prefixMention.find((char) => currentWord.startsWith(char));
+    if (mention !== undefined) {
+        const query = currentWord.slice(mention.length);
+        return query
+            ? rankSuggestions(query, _prefixes, maxSuggestions)
+            : listAll(_prefixes, maxSuggestions);
+    }
+
+    // `sm:bl` ranks against `bl`; a bare `sm:` lists everything.
+    const parts = currentWord.split(":");
+    const query = parts.length > 1 ? parts[1] : parts[0];
+    return query
+        ? rankSuggestions(query, _suggestions, maxSuggestions)
+        : listAll(_suggestions, maxSuggestions);
+}
+
+const listAll = (list, limit) =>
+    list.slice(0, Math.max(0, limit)).map((value) => ({ value, indices: [] }));
 
 export function attachInputHandler(
     textarea,
-    mirroredEle,
     suggestionsEle,
     _prefixes,
     _suggestions,
     maxSuggestions,
-    replaceCurrentWord,
     findIndexOfCurrentWord,
     prefixMention
 ) {
     textarea.addEventListener("input", () => {
-        const currentValue = textarea.value;
         const cursorPos = textarea.selectionStart;
         const startIndex = findIndexOfCurrentWord(textarea);
+        const currentWord = textarea.value.substring(startIndex + 1, cursorPos);
 
-        const currentWord = currentValue.substring(startIndex + 1, cursorPos);
-        if (currentWord === "") {
-            suggestionsEle.style.display = "none";
-            return;
-        }
-
-        let matches = [];
-        
-        const isPrefixMention = prefixMention.some((prefix) =>
-            currentWord.startsWith(prefix)
+        const matches = getMatches(
+            currentWord,
+            _prefixes,
+            _suggestions,
+            maxSuggestions,
+            prefixMention
         );
 
-        if (isPrefixMention) {
-            matches = _prefixes.map((prefix) => prefix);
-        } else {
-            const _parts = currentWord.split(":");
-            const _currentWord = _parts?.length > 1 ? _parts[1] : _parts[0];
-            matches = _suggestions.filter((suggestion) =>
-                suggestion.toLowerCase().includes(_currentWord.toLowerCase())
-            );
-        }
-
-        matches = matches.slice(0, maxSuggestions);
-
         if (matches.length === 0) {
-            suggestionsEle.style.display = "none";
+            hideSuggestions(suggestionsEle);
             return;
         }
-
-        const textBeforeCursor = currentValue.substring(0, cursorPos);
-        const textAfterCursor = currentValue.substring(cursorPos);
-
-        const pre = document.createTextNode(textBeforeCursor);
-        const post = document.createTextNode(textAfterCursor);
-        const caretEle = document.createElement("span");
-        caretEle.innerHTML = "&nbsp;";
-
-        mirroredEle.innerHTML = "";
-        mirroredEle.append(pre, caretEle, post);
-
-        suggestionsEle.innerHTML = "";
-        matches.forEach((match) => {
-            const option = document.createElement("div");
-            option.classList.add("fuzzyarea__suggestion");
-            option.textContent = match;
-
-            option.addEventListener("click", function () {
-                replaceCurrentWord(textarea, match, _prefixes);
-                suggestionsEle.style.display = "none";
-            });
-
-            suggestionsEle.appendChild(option);
-        });
-        suggestionsEle.style.display = "block";
+        renderSuggestions(suggestionsEle, matches);
     });
 }

@@ -5,18 +5,26 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6
         with:
-          node-version: 16
+          node-version: 22
           registry-url: https://registry.npmjs.org
+      - name: update npm
+        run: npm install -g npm@latest
+      - name: install dependencies
+        run: npm ci
+      - name: test
+        run: npm test
       - name: publish
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: npm publish --provenance --access public

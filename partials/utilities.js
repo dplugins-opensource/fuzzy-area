@@ -1,7 +1,4 @@
 // utilities.js
-export const parseValue = (v) =>
-    v.endsWith("px") ? parseInt(v.slice(0, -2), 10) : 0;
-
 export const clamp = (min, value, max) => Math.min(Math.max(min, value), max);
 
 export const findIndexOfCurrentWord = (textarea) => {
@@ -45,12 +42,14 @@ export const replaceCurrentWord = (textarea, newWord, prefixes = []) => {
             newWord +
             currentValue.substring(endIndex);
     } else {
+        // Reuse a following space instead of adding a second one.
+        const rest = currentValue.substring(endIndex);
         newValue =
             currentValue.substring(0, startIndex + 1) +
             prefixFound +
             newWord +
-            " " +
-            currentValue.substring(endIndex);
+            (rest.startsWith(" ") ? "" : " ") +
+            rest;
     }
     textarea.value = newValue;
 

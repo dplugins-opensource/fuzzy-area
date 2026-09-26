@@ -1,4 +1,10 @@
 // keydownHandler.js
+import {
+    SUGGESTION_CLASS,
+    FOCUSED_CLASS,
+    hideSuggestions,
+    isSuggestionsVisible,
+} from "./suggestionsList.js";
 
 export function attachKeydownHandler(
     textarea,
@@ -7,75 +13,58 @@ export function attachKeydownHandler(
     replaceCurrentWord,
     clamp
 ) {
-    let currentSuggestionIndex = -1;
-
     textarea.addEventListener("keydown", (e) => {
         if (
             !["ArrowDown", "ArrowUp", "Enter", "Escape", "Tab"].includes(e.key)
         ) {
             return;
         }
-
-        const suggestionsElements = suggestionsEle.querySelectorAll(
-            ".fuzzyarea__suggestion"
-        );
-        const numSuggestions = suggestionsElements.length;
-        if (numSuggestions === 0 || suggestionsEle.style.display === "none") {
+        if (!isSuggestionsVisible(suggestionsEle)) {
             return;
         }
-        e.preventDefault();
+
+        const options = [
+            ...suggestionsEle.querySelectorAll(`.${SUGGESTION_CLASS}`),
+        ];
+        // Focus lives in the DOM, so any re-render or hide resets it.
+        const focusedIndex = options.findIndex((option) =>
+            option.classList.contains(FOCUSED_CLASS)
+        );
 
         switch (e.key) {
             case "ArrowDown":
-                updateSuggestionFocus(
-                    suggestionsElements,
-                    currentSuggestionIndex,
-                    numSuggestions,
-                    true
+            case "ArrowUp": {
+                e.preventDefault();
+                const nextIndex = clamp(
+                    0,
+                    focusedIndex + (e.key === "ArrowDown" ? 1 : -1),
+                    options.length - 1
                 );
+                if (focusedIndex >= 0) {
+                    options[focusedIndex].classList.remove(FOCUSED_CLASS);
+                }
+                options[nextIndex].classList.add(FOCUSED_CLASS);
+                options[nextIndex].scrollIntoView?.({ block: "nearest" });
                 break;
-            case "ArrowUp":
-                updateSuggestionFocus(
-                    suggestionsElements,
-                    currentSuggestionIndex,
-                    numSuggestions,
-                    false
-                );
-                break;
+            }
             case "Enter":
             case "Tab":
-                if (
-                    currentSuggestionIndex >= 0 &&
-                    currentSuggestionIndex < numSuggestions
-                ) {
-                    replaceCurrentWord(
-                        textarea,
-                        suggestionsElements[currentSuggestionIndex].innerText,
-                        _prefixes
-                    );
-                    suggestionsEle.style.display = "none";
-                    if (e.key !== "Enter") {
-                        textarea.focus();
-                    }
+                // Nothing focused: let Enter add a new line / Tab move focus.
+                if (focusedIndex < 0) {
+                    return;
                 }
+                e.preventDefault();
+                replaceCurrentWord(
+                    textarea,
+                    options[focusedIndex].dataset.value,
+                    _prefixes
+                );
+                hideSuggestions(suggestionsEle);
                 break;
             case "Escape":
-                suggestionsEle.style.display = "none";
+                e.preventDefault();
+                hideSuggestions(suggestionsEle);
                 break;
         }
     });
-
-    function updateSuggestionFocus(elements, index, numElements, isDown) {
-        elements[clamp(0, index, numElements - 1)].classList.remove(
-            "fuzzyarea__suggestion--focused"
-        );
-        currentSuggestionIndex = clamp(
-            0,
-            isDown ? index + 1 : index - 1,
-            numElements - 1
-        );
-        elements[currentSuggestionIndex].classList.add(
-            "fuzzyarea__suggestion--focused"
-        );
-    }
 }
