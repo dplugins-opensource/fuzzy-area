@@ -1,5 +1,7 @@
 # Custom multiple autocomplete
 
+Built by [DPlugins](https://dplugins.com), makers of Winden and FanCoolo.
+
 ## Updated to get extra features:
 
 1. Autocomplete prefix
@@ -83,6 +85,9 @@ initializeFuzzyArea({
 This is modified solution from [phuoc.ng](https://phuoc.ng/collection/mirror-a-text-area/add-autocomplete-to-your-text-area/)
 
 **Changelog**
+
+1.2.4
+- Added DPlugins homepage and author link
 
 1.2.3
 - Package JSON fix

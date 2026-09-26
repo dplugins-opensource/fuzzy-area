@@ -1,7 +1,7 @@
 {
   "name": "fuzzy-area",
   "version": "1.2.3",
-  "description": "simple plain js textarea fuzzy autocomplete with option to defne prefix",
+  "description": "Simple plain JS textarea fuzzy autocomplete with optional prefixes. By DPlugins.",
   "main": "fuzzy-area.js",
   "directories": {
     "example": "example"
@@ -20,10 +20,13 @@
     "fuzzy",
     "autocomplete"
   ],
-  "author": "DPlugins",
+  "author": {
+    "name": "DPlugins",
+    "url": "https://dplugins.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dplugins-opensource/fuzzy-area/issues"
   },
-  "homepage": "https://github.com/dplugins-opensource/fuzzy-area#readme"
+  "homepage": "https://dplugins.com"
 }
